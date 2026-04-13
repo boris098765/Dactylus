@@ -1,0 +1,14 @@
+from fastapi import FastAPI
+
+from .app.api.routes import category
+from .app.infra.db import init_db
+
+app = FastAPI()
+
+
+@app.on_event("startup")
+def startup():
+    init_db()
+
+
+app.include_router(category.router)
