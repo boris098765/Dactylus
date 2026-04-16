@@ -26,4 +26,9 @@ class TextLexemeORM(Base):
     text = Column(String, unique=True, nullable=False)
     slug = Column(String, unique=True, nullable=False)
     author_id = Column(Integer, nullable=False)
-    moderation_status = ...
+
+    moderation_status = Column(
+        Enum(ModerationStatusEnum),
+        nullable=False,
+        default=ModerationStatusEnum.PENDING
+    )

@@ -1,4 +1,4 @@
-from shared.utils.slug import generate_slug
+from shared.utils import generate_slug
 
 from ..entities import (
     ModerationStatusEnum,

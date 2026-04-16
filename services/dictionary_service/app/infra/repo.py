@@ -1,5 +1,5 @@
 from typing import Optional
-from services.dictionary_service.app.infra.models import CategoryORM
+from .models import CategoryORM
 
 
 class CategoryRepository:

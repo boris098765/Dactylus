@@ -1,0 +1,44 @@
+services:
+  # Сервис словаря
+  dictionary-service:
+    build:
+      context: .
+      dockerfile: dictionary_service/Dockerfile
+    container_name: dictionary-service
+    ports:
+      - "8000:8000"
+    volumes:
+      - dictionary_data:/app/data
+      - ./dictionary_service:/app/dictionary_service
+      - ./shared:/shared
+    environment:
+      - DATABASE_URL=sqlite:///./data/dictionary.db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Сервис пользователей
+  users-service:
+    build:
+      context: .
+      dockerfile: users_service/Dockerfile
+    container_name: users-service
+    ports:
+      - "8001:8001"
+    volumes:
+      - users_data:/app/data
+      - ./users_service:/app/users_service
+      - ./shared:/shared
+    environment:
+      - DATABASE_URL=sqlite:///./data/users.db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  dictionary_data:
+  users_data:
+
+networks:
+  app-network:
+    driver: bridge

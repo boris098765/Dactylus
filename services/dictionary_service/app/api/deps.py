@@ -2,7 +2,7 @@ from fastapi import Depends
 
 from ..domain.services import CategoryService
 from ..infra.db import SessionLocal
-from ..infra.repositories import CategoryRepository
+from ..infra.repo import CategoryRepository
 
 
 def get_session():
