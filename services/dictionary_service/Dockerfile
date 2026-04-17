@@ -3,19 +3,20 @@ FROM python:3.11-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
+    gcc curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY dictionary_service/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+COPY services/dictionary_service/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY dictionary_service/ /app/
 COPY shared/ /app/shared/
+COPY services/dictionary_service/ .
 
-ENV DATABASE_URL=sqlite:///./data/dictionary.db
+# Создаём папку для БД
+RUN mkdir -p /app/app/data
 
-RUN mkdir -p /app/data
+ENV PYTHONPATH=/app:$PYTHONPATH
 
 EXPOSE 8000
 
-CMD ["uvicorn", "run:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "run:app", "--host", "0.0.0.0", "--port", "8000"]
