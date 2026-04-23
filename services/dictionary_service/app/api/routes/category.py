@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from shared.auth_client import require_auth, AuthClient
+
 from ...domain.exceptions import *
 from ..deps import get_category_service
 from ..schemas.category import (
@@ -21,9 +23,11 @@ def handle_error(e: Exception):
 
 
 @router.post("/", response_model=CategoryResponse)
+@require_auth
 def create_category(
-    data: CategoryCreateRequest,
-    service=Depends(get_category_service),
+        data: CategoryCreateRequest,
+        service=Depends(get_category_service),
+        current_user: dict = None
 ):
     try:
         category = service.create(
@@ -60,10 +64,12 @@ def get_children(category_id: int, service=Depends(get_category_service)):
 
 
 @router.patch("/{category_id}", response_model=CategoryResponse)
+@require_auth
 def update_category(
-    category_id: int,
-    data: CategoryUpdateRequest,
-    service=Depends(get_category_service),
+        category_id: int,
+        data: CategoryUpdateRequest,
+        service=Depends(get_category_service),
+        current_user: dict = None
 ):
     try:
         return service.update(
@@ -76,7 +82,12 @@ def update_category(
 
 
 @router.delete("/{category_id}")
-def delete_category(category_id: int, service=Depends(get_category_service)):
+@require_auth
+def delete_category(
+        category_id: int,
+        service=Depends(get_category_service),
+        current_user: dict = None
+):
     try:
         service.delete(category_id)
         return {"status": "ok"}

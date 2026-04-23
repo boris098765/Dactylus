@@ -46,6 +46,31 @@ services:
       retries: 3
       start_period: 10s
 
+  # ========== Auth Service ==========
+  auth:
+    build:
+      context: .
+      dockerfile: services/auth_service/Dockerfile
+    container_name: dactylus-auth
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=sqlite:///./app/data/auth.db
+      - PYTHONPATH=/app
+      - AUTH_SECRET_KEY=${AUTH_SECRET_KEY:-changeme-in-production}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+    volumes:
+      - ./services/auth_service/data:/app/app/data
+    networks:
+      - dactylus-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 networks:
   dactylus-network:
     driver: bridge

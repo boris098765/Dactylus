@@ -10,3 +10,6 @@ todo/
 *.json
 *.sh
 *.env
+
+*.db
+*.md
